@@ -13,7 +13,12 @@ from datetime import timedelta
 import libcst as cst
 from tqdm import tqdm
 
-
+def remove_non_py_files(dir_path):
+    for dirpath, dirnames, filenames in os.walk(dir_path):
+        for filename in filenames:
+            file_path = os.path.join(dirpath, filename)
+            if not file_path.endswith('.py'):
+                os.remove(file_path)
 # pyre start pipeline
 def pyre_start(project_path):
     pyre_util.clean_watchman_config(project_path)
@@ -23,6 +28,7 @@ def pyre_start(project_path):
 
 
 def process_project(project_path):
+    remove_non_py_files(project_path)
     start_t = time.time()
     project_author = project_path.split("/")[len(project_path.split("/")) - 2]
     project_name = project_path.split("/")[len(project_path.split("/")) - 1]
